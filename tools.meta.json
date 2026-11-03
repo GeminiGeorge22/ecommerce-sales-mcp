@@ -1,0 +1,8 @@
+{
+  "junglee/amazon-bestsellers": "Use when you need the top 100 Amazon Best Sellers for a category URL (name, price, rank, URL, image).",
+  "junglee/amazon-reviews-scraper": "Use when you need the customer reviews of specific Amazon products (rating, text, date, reactions, images).",
+  "caffein.dev/ebay-sold-listings": "Use when you need what items actually sold for on eBay (sold comps) for a keyword, marketplace and date range.",
+  "unseenuser/TikTok-Shop-Scraper": "Use for TikTok Shop products, reviews, sellers, creator affiliates and GMV/sales estimates by category, keyword, shop or product URL.",
+  "publicrecords/etsy-shop-velocity": "Use when you need how many sales an Etsy shop has made, or how fast shops are selling, filtered by shop name, title keyword, category or change date. Returns one row per shop with the measured sales counter and the date it was read.",
+  "publicrecords/etsy-search-scraper": "Use when you need what ranks on Etsy for a keyword, category or market page: position, price, rating, review count, Bestseller/Star Seller badges and whether the listing is an ad."
+}
