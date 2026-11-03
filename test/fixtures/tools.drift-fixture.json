@@ -1,0 +1,754 @@
+{
+  "$comment": "Drift-check fixture: tools.json with one deliberate mismatch. Not served. See scripts/build-tools.mjs --tools.",
+  "actors": [
+    "junglee/amazon-bestsellers",
+    "junglee/amazon-reviews-scraper",
+    "caffein.dev/ebay-sold-listings",
+    "unseenuser/TikTok-Shop-Scraper",
+    "publicrecords/etsy-shop-velocity",
+    "publicrecords/etsy-search-scraper"
+  ],
+  "tools": [
+    {
+      "name": "junglee--amazon-bestsellers",
+      "title": "Amazon Bestsellers Scraper",
+      "description": "Amazon Bestsellers Scraper. Scrape the Amazon Best Sellers categories and extract details on top 100 most popular items on Amazon. Download product name, price, URL, and thumbnail image. Best used on .com, .co.uk, .de, .fr, .es, and .it domains. Download your data in various formats: HTML table, JSON, CSV, Excel, and more.\n\nWhen to use: Use when you need the top 100 Amazon Best Sellers for a category URL (name, price, rank, URL, image).\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"junglee/amazon-bestsellers\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/junglee/amazon-bestsellers",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categoryUrls": {
+            "title": "Amazon category URLs",
+            "description": "Pick one or a few Best Seller categories to scrape. If you enter a top-level category, all subcategories will be scraped (up to max depth). Category URL has to contain Best-Sellers , best-sellers or bestsellers . To see examples of all accepted URLs, check out the readme . Example: [\"https://www.amazon.com/Best-Sellers-Electronics/zgbs/electronics/\"]",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "maxItemsPerStartUrl": {
+            "title": "Max results (per start URL)",
+            "description": "Enter the maximum number of results you want to scrape per each star URL. Note that Amazon has a hard limit of 100 bestsellers per category. Example: 100",
+            "type": "integer",
+            "minimum": 0
+          },
+          "depthOfCrawl": {
+            "title": "How many subcategories do you want to scrape?",
+            "description": "Amazon Best Sellers covers 42 main categories. Each of those have at least one more subcategory level. Setting this field to 2 will get you roughly 550 subcategories, each with 100 results.",
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "language": {
+            "title": "Language",
+            "description": "Language to use on Amazon. **Disclaimer**: each Amazon domain has a different set of supported languages. If you choose a language that is not supported by the domain, the scraper will use the default language of the domain.",
+            "type": "string",
+            "enum": [
+              "cs",
+              "da",
+              "de",
+              "en",
+              "es",
+              "fr",
+              "nl",
+              "pl",
+              "pt",
+              "sv",
+              "tr",
+              "he",
+              "ar",
+              "mrta",
+              "hi",
+              "bn",
+              "ta",
+              "te",
+              "kn",
+              "ml",
+              "ko",
+              "zh_CN",
+              "zh_TW",
+              "ja"
+            ]
+          },
+          "detailedInformation": {
+            "title": "Detailed information",
+            "description": "Check this if you want to get the maximum amount of information about individual products. However, choosing this option means the scraper could take longer, since it is extracting more data.",
+            "type": "boolean",
+            "default": false
+          },
+          "useCaptchaSolver": {
+            "title": "Use Captcha solver (warning: see description)",
+            "description": "If enabled the scraper will automatically solve captchas thrown by Amazon. This will decrease the amount of request retries and increase the speed of the scraper. ***IMPORTANT*** - This option works well only for the `'.com'` Amazon domain, but even for that one Amazon doesn't show a few product fields after solving a captcha (specifically: 'attributes', 'manufacturer attributes', and 'bestseller ranks')",
+            "type": "boolean",
+            "default": false
+          },
+          "__driftFixture": {
+            "type": "string",
+            "description": "Deliberate mismatch for the drift-check self-test."
+          }
+        },
+        "required": [
+          "categoryUrls"
+        ]
+      },
+      "annotations": {
+        "title": "Amazon Bestsellers Scraper",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "junglee--amazon-reviews-scraper",
+      "title": "Amazon Reviews Scraper",
+      "description": "Amazon Reviews Scraper. Amazon scraper to extract reviews from Amazon products. Scrape and download detailed reviews without using the Amazon API, including rating score, review description, reactions and images. Download your data as HTML table, JSON, CSV, Excel, XML.\n\nWhen to use: Use when you need the customer reviews of specific Amazon products (rating, text, date, reactions, images).\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"junglee/amazon-reviews-scraper\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/junglee/amazon-reviews-scraper",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productUrls": {
+            "title": "URLs of Amazon products",
+            "description": "Enter the URL or URLs of the Amazon products you want to scrape. (E.g., https://www.amazon.com/Sceptre-E248W-19203R-Monitor-Speakers-Metallic/dp/B0773ZY26F). Click + Add to scrape multiple URLs at once. Example: [{\"url\":\"https://www.amazon.com/dp/B0CWXNS552\"}]",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "URL to process."
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          },
+          "maxReviews": {
+            "title": "Max reviews per product (max count depends on the type of reviews)",
+            "description": "Type in the amount of reviews to be scraped. Leave this blank if you want to extract all reviews. ❗ Note: max amount of reviews per product is 100 per star count (e.g. 100 reviews per 1 star), 100 per product variant (100 reviews per each product variant), several hundred for media reviews, ~20 for keyword search Example: 100",
+            "type": "integer",
+            "minimum": 0
+          },
+          "includeGdprSensitive": {
+            "title": "Include personal information",
+            "description": "Personal data such as name, ID or profile image is protected by GDPR in the European Union and by other regulations around the world. You should not scrape personal data unless you have a legitimate reason to do so. [Read more](https://blog.apify.com/is-web-scraping-legal/).",
+            "type": "boolean",
+            "default": false
+          },
+          "sort": {
+            "title": "Sort reviews by",
+            "description": "Select by which criteria the reviews should be sorted. Amazon's default is Top reviews . Options: helpful = Top reviews; recent = Most recent.",
+            "type": "string",
+            "enum": [
+              "helpful",
+              "recent"
+            ],
+            "default": "helpful"
+          },
+          "reviewsCutoffDate": {
+            "title": "Newer than",
+            "description": "Limit how far back to the history the scraper should go. The date should be in YYYY-MM-DD or full ISO absolute format or in relative format e.g. 1 days, 2 months, 3 years. All time values are taken in UTC timezone. The maximum reviews per product we can get is 100.",
+            "type": "string",
+            "pattern": "^(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])(T[0-2]\\d:[0-5]\\d(:[0-5]\\d)?(\\.\\d+)?Z?)?$|^(\\d+)\\s*(minute|hour|day|week|month|year)s?$"
+          },
+          "filterByRatings": {
+            "title": "Filter by ratings",
+            "description": "Select the number of stars by which reviews should be filtered. Amazon's default is All stars . Duplicate reviews, caused by selecting overlapping ratings (e.g., 1 star and All critical ) will be filtered out.",
+            "type": "array",
+            "default": [
+              "allStars"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "allStars",
+                "fiveStar",
+                "fourStar",
+                "threeStar",
+                "twoStar",
+                "oneStar",
+                "positive",
+                "critical"
+              ]
+            }
+          },
+          "reviewsUseProductVariantFilter": {
+            "title": "Scrape a single product variant",
+            "description": "If the product has multiple variants (e.g., different colors, sizes, etc.) , you can scrape reviews only for the selected variant.",
+            "type": "boolean",
+            "default": false
+          },
+          "reviewsFilterByKeywords": {
+            "title": "Search by keywords",
+            "description": "Enter keywords by which the reviews should be filtered. Each keyword is scraped separately, in a combination with Filter by ratings option. Duplicate reviews, caused by selecting overlapping keywords, will be filtered out. Example keywords that get lots of results: `[\"Good\", \"Bad\", \"Great\", \"Quality\", \"Useful\", \"Love\", \"Price\"]`",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "scrapeProductDetails": {
+            "title": "Scrape product details",
+            "description": "If enabled, the Actor will scrape and save product data the same way as the [Amazon Product Scraper](https://console.apify.com/actors/BG3WDrGdteHgZgbPK). The product details will be available in the `product` output field.",
+            "type": "boolean",
+            "default": false
+          },
+          "reviewsAlwaysSaveCategoryData": {
+            "title": "Always save category data",
+            "description": "If enabled, the Actor will return the review category data even if there are no reviews. - Normally, only reviews are saved, if there are no reviews, the review category data is not saved. - With this option, the review category data will be saved alone, if there are no reviews (review fields are empty).",
+            "type": "boolean",
+            "default": false
+          },
+          "deduplicateRedirectedAsins": {
+            "title": "Deduplicate redirected ASINs",
+            "description": "If set, the crawler will deduplicate the redirected ASINs (by default). Otherwise the product will be saved multiple times under the ASINs it was redirected to.",
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "productUrls"
+        ]
+      },
+      "annotations": {
+        "title": "Amazon Reviews Scraper",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "caffein-dot-dev--ebay-sold-listings",
+      "title": "eBay Sold Listings Search",
+      "description": "eBay Sold Listings Search. Get confirmed eBay sold prices. Search by keyword across 8 marketplaces, filter by date range, and export clean structured data for comps, resale pricing, and market research.\n\nWhen to use: Use when you need what items actually sold for on eBay (sold comps) for a keyword, marketplace and date range.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"caffein.dev/ebay-sold-listings\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/caffein.dev/ebay-sold-listings",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "title": "Keywords",
+            "description": "One or more search keywords. Each keyword runs as a separate search with the same filters applied to all. Example: [\"rtx 4080\"]",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "items": {
+              "type": "string"
+            }
+          },
+          "keyword": {
+            "title": "Keyword (deprecated — use Keywords)",
+            "description": "Single search keyword. Deprecated: use the 'keywords' array field instead.",
+            "type": "string"
+          },
+          "search": {
+            "title": "Search (deprecated — use Keywords)",
+            "description": "Deprecated: alias for the single-keyword `keyword` field. Use the `keywords` array instead. Accepted for backward compatibility with callers that send `search`. Backslash-escaped quotes (\\\") in the value are unescaped before the search runs.",
+            "type": "string"
+          },
+          "categoryId": {
+            "title": "Category",
+            "description": "eBay category ID — maps directly to the `_sacat` URL parameter. Enter ANY eBay category ID as free text; you are not limited to a preset list. Use \"0\" (the default) for All Categories. Don't know the ID? We maintain the full, up-to-date list of category & subcategory IDs at https://sold-comps.com/ebay-categories",
+            "type": "string",
+            "default": "0"
+          },
+          "subcategoryId": {
+            "title": "Subcategory",
+            "description": "Optional eBay subcategory ID — also maps to `_sacat`. Enter ANY subcategory ID as free text. When set, it overrides the Category field above. Leave blank to search at the category level. Full ID reference: https://sold-comps.com/ebay-categories. The output record's `categoryId` / `category` fields reflect the effective category actually used for the search.",
+            "type": "string",
+            "default": ""
+          },
+          "ebaySite": {
+            "title": "eBay Site",
+            "description": "eBay site to scrape from Options: ebay.com = eBay.com (US); ebay.co.uk = eBay.co.uk (UK); ebay.de = eBay.de (Germany); ebay.fr = eBay.fr (France); ebay.it = eBay.it (Italy); ebay.es = eBay.es (Spain); ebay.ca = eBay.ca (Canada); ebay.com.au = eBay.com.au (Australia).",
+            "type": "string",
+            "enum": [
+              "ebay.com",
+              "ebay.co.uk",
+              "ebay.de",
+              "ebay.fr",
+              "ebay.it",
+              "ebay.es",
+              "ebay.ca",
+              "ebay.com.au"
+            ],
+            "default": "ebay.com"
+          },
+          "daysToScrape": {
+            "title": "Days to Scrape",
+            "description": "Number of days back to scrape sold listings (default: 30)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 90,
+            "default": 30
+          },
+          "count": {
+            "title": "Count",
+            "description": "Number of listings to scrape (default: 100)",
+            "type": "integer",
+            "minimum": 1,
+            "default": 100
+          },
+          "sortOrder": {
+            "title": "Sort order",
+            "description": "Sort order for the sold search results page. Options: endedRecently = Ended recently; timeNewlyListed = Time: newly listed; pricePlusPostageLowest = Price + postage: lowest first; pricePlusPostageHighest = Price + postage: highest first; distanceNearest = Distance: nearest first.",
+            "type": "string",
+            "enum": [
+              "endedRecently",
+              "timeNewlyListed",
+              "pricePlusPostageLowest",
+              "pricePlusPostageHighest",
+              "distanceNearest"
+            ],
+            "default": "endedRecently"
+          },
+          "minPrice": {
+            "title": "Min price",
+            "description": "Minimum sold price filter (search-page filter).",
+            "type": "integer",
+            "minimum": 0
+          },
+          "maxPrice": {
+            "title": "Max price",
+            "description": "Maximum sold price filter (search-page filter).",
+            "type": "integer",
+            "minimum": 0
+          },
+          "buyingFormat": {
+            "title": "Buying format",
+            "description": "Search-page buying format filter. Options: all = All; auction = Auction; buyItNow = Buy It Now; acceptsOffers = Accepts Offers.",
+            "type": "string",
+            "enum": [
+              "all",
+              "auction",
+              "buyItNow",
+              "acceptsOffers"
+            ],
+            "default": "all"
+          },
+          "itemLocation": {
+            "title": "Item location",
+            "description": "Search-page item location filter. Options: default = Default; domestic = Domestic only; worldwide = Worldwide.",
+            "type": "string",
+            "enum": [
+              "default",
+              "domestic",
+              "worldwide"
+            ],
+            "default": "default"
+          },
+          "sellerCountry": {
+            "title": "Seller country",
+            "description": "Only return listings from sellers located in this country. Two-letter ISO code, e.g. JP or GB . When set, the Item location filter is ignored. If no listing matches, eBay can return listings from other countries: check itemLocation on each item. Country codes",
+            "type": "string"
+          },
+          "postalCode": {
+            "title": "Delivery postal code",
+            "description": "Delivery postal code for more accurate shipping prices, in the format of the selected eBay site (e.g. a ZIP code on ebay.com, SW1A 1AA on ebay.co.uk). Leave blank to use a central postcode for the site. A value in the wrong format is ignored with a warning.",
+            "type": "string"
+          },
+          "itemCondition": {
+            "title": "Condition",
+            "description": "Search-page condition filter. Options: any = Any; new = New; used = Used.",
+            "type": "string",
+            "enum": [
+              "any",
+              "new",
+              "used"
+            ],
+            "default": "any"
+          },
+          "conditionId": {
+            "title": "Condition ID",
+            "description": "Numeric eBay condition ID — overrides itemCondition when set.",
+            "type": "integer"
+          },
+          "sellerType": {
+            "title": "Seller type (EU sites only)",
+            "description": "Filter by seller type. EU sites only — works on ebay.de, ebay.fr, ebay.it and ebay.es. On all other sites this filter is ignored and results are unfiltered. Options: any = Any; private = Private; business = Business.",
+            "type": "string",
+            "enum": [
+              "any",
+              "private",
+              "business"
+            ],
+            "default": "any"
+          },
+          "aspectFilter": {
+            "title": "Aspect filter",
+            "description": "eBay aspect facet filters, e.g. {\"Brand\": \"Nike\"}. Keys and values are double-encoded per eBay's convention.",
+            "type": "object"
+          },
+          "includeCompletedListings": {
+            "title": "Include Completed Listings",
+            "description": "When true (default), includes eBay's Completed Listings filter alongside the Sold filter. This enables accurate detection of 'Best Offer Accepted' listings via the listingType and isBestOfferAccepted fields. When false, uses only the Sold filter — all results are guaranteed sold items, but Best Offer Accepted items will appear as regular 'buy_it_now' with the asking price shown as soldPrice.",
+            "type": "boolean",
+            "default": true
+          },
+          "exactMatch": {
+            "title": "Exact match",
+            "description": "When true (default), eBay's loosened 'results matching fewer words' items are removed so only listings closely matching the keyword are returned. Set to false to include them.",
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "annotations": {
+        "title": "eBay Sold Listings Search",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "unseenuser--TikTok-Shop-Scraper",
+      "title": "TikTok Shop Scraper [NO COOKIES] ✅",
+      "description": "TikTok Shop Scraper [NO COOKIES] ✅. Extract product data, reviews, seller info, creator affiliates, and GMV/sales estimates from TikTok Shop at scale. Filter by category, price range, and country (US, UK). Built for dropshippers, e-commerce sellers, and DTC brands hunting trending products before they go viral.\n\nWhen to use: Use for TikTok Shop products, reviews, sellers, creator affiliates and GMV/sales estimates by category, keyword, shop or product URL.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"unseenuser/TikTok-Shop-Scraper\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/unseenuser/TikTok-Shop-Scraper",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "title": "Mode",
+            "description": "Pick what you want to scrape. The matching section below has the same emoji.",
+            "type": "string",
+            "enum": [
+              "shop_search",
+              "shop_catalog",
+              "product_details",
+              "product_reviews",
+              "creator_showcase"
+            ],
+            "default": "shop_search"
+          },
+          "searchKeywords": {
+            "title": "Search keywords",
+            "description": "What you'd type into TikTok Shop's search bar. One per line.",
+            "type": "array",
+            "default": [],
+            "items": {
+              "type": "string"
+            }
+          },
+          "shopUrls": {
+            "title": "TikTok Shop store URLs",
+            "description": "Full store URLs. On the app, tap a shop name and copy the link. Format: https://www.tiktok.com/shop/store/ /",
+            "type": "array",
+            "default": [],
+            "items": {
+              "type": "string"
+            }
+          },
+          "productUrls": {
+            "title": "Product PDP URLs",
+            "description": "Full product detail page URLs. Right-click any TikTok Shop product and copy the link. Format: https://www.tiktok.com/shop/pdp/ /",
+            "type": "array",
+            "default": [],
+            "items": {
+              "type": "string"
+            }
+          },
+          "usernames": {
+            "title": "TikTok usernames",
+            "description": "TikTok handles, one per line. The @ prefix is optional - both 'hyram' and '@hyram' work.",
+            "type": "array",
+            "default": [],
+            "items": {
+              "type": "string"
+            }
+          },
+          "region": {
+            "title": "TikTok Shop region",
+            "description": "The United States is the only fully supported market and the only one this Actor is tested against. The other markets are selectable and sometimes return data, but they are unreliable and may come back empty or with fields missing (no review counts, no seller location). Treat anything other than US as unsupported and unwarranted. Leave this set to US.",
+            "type": "string",
+            "enum": [
+              "US",
+              "GB",
+              "ID",
+              "MY",
+              "PH",
+              "SG",
+              "VN",
+              "TH",
+              "DE",
+              "FR",
+              "IT",
+              "ES",
+              "IE",
+              "MX",
+              "BR",
+              "JP"
+            ],
+            "default": "US"
+          },
+          "sortBy": {
+            "title": "Shop Catalog sort order",
+            "description": "Only used in Shop Catalog mode. 'Best selling' surfaces a store's proven winners; 'Newest' surfaces what they just launched. Options: top = 🔥 Best selling (default); new_releases = 🆕 Newest releases.",
+            "type": "string",
+            "enum": [
+              "top",
+              "new_releases"
+            ],
+            "default": "top"
+          },
+          "maxResults": {
+            "title": "Max results per input (0 = everything)",
+            "description": "0 = return all available results (no limit). Any other number is a limit per query, shop or creator: with 5 keywords and 100 here, you get up to 500 rows in total. There is no ceiling on this number. Nothing is capped for technical reasons, so if you want to control spend, use this run's \"max items\" setting, which limits what you are charged for.",
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "maxReviewsPerProduct": {
+            "title": "Max reviews per product (0 = every review)",
+            "description": "0 = fetch every review the product has (no limit). Only used in Product Reviews mode. There is no ceiling here either, so be aware that popular products can carry tens of thousands of reviews and each review is one billable row. Use this run's \"max items\" setting if you want a hard stop on spend.",
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "getRelatedVideos": {
+            "title": "Include related affiliate videos",
+            "description": "Only used in Product Details mode. Adds a relatedVideoCount field. The affiliate videos themselves are returned either way, so this changes very little - it is hidden from the form and kept only so that previously saved runs stay valid.",
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      },
+      "annotations": {
+        "title": "TikTok Shop Scraper [NO COOKIES] ✅",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "publicrecords--etsy-shop-velocity",
+      "title": "Etsy Shop Sales Tracker & Scraper",
+      "description": "Etsy Shop Sales Tracker & Scraper. Track Etsy shop sales counters with this Etsy shop scraper: measured sales counts with the date each was read.\n\nWhen to use: Use when you need how many sales an Etsy shop has made, or how fast shops are selling, filtered by shop name, title keyword, category or change date. Returns one row per shop with the measured sales counter and the date it was read.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"publicrecords/etsy-shop-velocity\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/publicrecords/etsy-shop-velocity",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shops": {
+            "title": "Shop names",
+            "description": "Etsy shop names (the part after etsy.com/shop/). Leave empty to use the keyword or category filters. Example: [\"OrelCeramics\",\"Bestickend\"]",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "keywords": {
+            "title": "Keywords in shop title",
+            "description": "Case-insensitive words matched against the shop title and headline.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "category": {
+            "title": "Panel category",
+            "description": "Exact panel category label, matched case-insensitively, e.g. \"kids & baby > toys\", \"home & living > home decor > scatter cushions\", \"art & collectibles > fine art ceramics\". The label is filled for about 0.7% of shops, so a category filter returns only those shops. Empty = all.",
+            "type": "string"
+          },
+          "minSales": {
+            "title": "Minimum lifetime sales",
+            "description": "Only shops at or above this sales counter.",
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "since": {
+            "title": "Changed since (date)",
+            "description": "ISO date. Return only shops whose counters changed since this date. Empty = all matching shops.",
+            "type": "string"
+          },
+          "maxShops": {
+            "title": "Max shops",
+            "description": "Upper bound on rows returned (and charged).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20000,
+            "default": 200
+          }
+        }
+      },
+      "annotations": {
+        "title": "Etsy Shop Sales Tracker & Scraper",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "publicrecords--etsy-search-scraper",
+      "title": "Etsy Scraper — Listings, Prices & Best Sellers",
+      "description": "Etsy Scraper — Listings, Prices & Best Sellers. Scrape Etsy search results by keyword, category or market page: title, price, rating, reviews, Bestseller and Star Seller badges, ad flag and search rank.\n\nWhen to use: Use when you need what ranks on Etsy for a keyword, category or market page: position, price, rating, review count, Bestseller/Star Seller badges and whether the listing is an ad.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"publicrecords/etsy-search-scraper\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/publicrecords/etsy-search-scraper",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "title": "Search keywords",
+            "description": "Keywords to search, one per line (e.g. ceramic mug). Each keyword lands on Etsy's /market page, then pages through Etsy's own search API — every listing on the page (rendered and lazy-loaded), in Etsy's rank order. Example: [\"ceramic mug\"]",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sort": {
+            "title": "Sort",
+            "description": "Order of results, as on Etsy's own sort menu. Applies to search keywords (a market phrase with a sort set runs as a keyword search). Options: relevance = Relevance (Etsy default); newest = Newest; price_asc = Price: low to high; price_desc = Price: high to low; top_reviews = Top customer reviews.",
+            "type": "string",
+            "enum": [
+              "relevance",
+              "newest",
+              "price_asc",
+              "price_desc",
+              "top_reviews"
+            ],
+            "default": "relevance"
+          },
+          "minPrice": {
+            "title": "Min price",
+            "description": "Leave empty for no minimum.",
+            "type": "integer",
+            "minimum": 0
+          },
+          "maxPrice": {
+            "title": "Max price",
+            "description": "Highest price to include, whole units. Leave empty for no maximum.",
+            "type": "integer",
+            "minimum": 0
+          },
+          "marketPhrases": {
+            "title": "Market phrases",
+            "description": "Phrases for Etsy's /market/ pages (any phrase resolves). Example: personalized dog collar",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categoryUrls": {
+            "title": "Category URLs",
+            "description": "Etsy category pages, e.g. https://www.etsy.com/c/jewelry/necklaces (no query string). Read in Etsy's default order.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "maxPages": {
+            "title": "Max pages per input",
+            "description": "Pages per input, 1–20 (Etsy's own cap). On the Standby/MCP endpoint one call stops at 240 s and says so (truncated:true with pagesDone/pagesRequested); big jobs belong in a batch run.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5
+          },
+          "maxItems": {
+            "title": "Max listings per run (0 = no cap)",
+            "description": "Stop after this many listing rows across all inputs. Raise it (or set 0 for no cap) to get more pages.",
+            "type": "integer",
+            "minimum": 0,
+            "default": 20
+          },
+          "maxCacheAgeHours": {
+            "title": "Max snapshot age (hours)",
+            "description": "Serve a keyword from our recent snapshot of the same search when it is at most this many hours old and holds every row you asked for; otherwise fetch live. Snapshot rows say data_source \"cache\", stale true and as_of (when they were read live), and are charged like live rows. 0 = always fetch live.",
+            "type": "integer",
+            "minimum": 0,
+            "default": 24
+          },
+          "fillLazyCards": {
+            "title": "Return every listing on the page",
+            "description": "Etsy renders 12 cards and lazy-loads the rest (48 more on page 1). On, the run fetches them the way Etsy's own page does, so you get the whole page in rank order. Off, you get the 12 rendered cards per page only (faster, fewer requests on your proxy).",
+            "type": "boolean",
+            "default": true
+          },
+          "is_best_seller": {
+            "title": "Bestsellers only",
+            "description": "Only return listings marked Bestseller.",
+            "type": "boolean",
+            "default": false
+          },
+          "is_star_seller": {
+            "title": "Star Seller shops only",
+            "description": "Only return listings from Star Seller shops.",
+            "type": "boolean",
+            "default": false
+          },
+          "free_shipping": {
+            "title": "Free shipping only",
+            "description": "Only return listings with free shipping.",
+            "type": "boolean",
+            "default": false
+          },
+          "is_discounted": {
+            "title": "On sale only",
+            "description": "Only return listings currently on sale.",
+            "type": "boolean",
+            "default": false
+          },
+          "instant_download": {
+            "title": "Digital downloads only",
+            "description": "Only return digital download listings.",
+            "type": "boolean",
+            "default": false
+          },
+          "is_handmade_only": {
+            "title": "Handmade only",
+            "description": "Only return listings Etsy flags as handmade.",
+            "type": "boolean",
+            "default": false
+          },
+          "is_personalizable": {
+            "title": "Personalizable only",
+            "description": "Only return listings that offer personalization.",
+            "type": "boolean",
+            "default": false
+          },
+          "max_processing_days": {
+            "title": "Ready to ship within (days)",
+            "description": "Only return listings whose processing time is at most this many days (Etsy's ready-to-ship filter).",
+            "type": "integer",
+            "minimum": 1
+          },
+          "ship_to": {
+            "title": "Ships to (country code)",
+            "description": "Two-letter code, e.g. US, GB, DE.",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "description": "Optional free-text label for this run (for example the Make template that started it). Copied onto every listing row and onto RUN_SUMMARY so template runs can be filtered. Leave empty if you do not need it.",
+            "type": "string",
+            "default": ""
+          },
+          "proxyConfiguration": {
+            "title": "Proxy",
+            "description": "Etsy blocks datacenter IPs. Default: Apify Proxy RESIDENTIAL, included in the event prices (no separate proxy or compute charge). Your own residential proxy works too. A blocked page is never charged.",
+            "type": "object",
+            "default": {
+              "useApifyProxy": true,
+              "apifyProxyGroups": [
+                "RESIDENTIAL"
+              ],
+              "apifyProxyCountry": "US"
+            },
+            "properties": {
+              "useApifyProxy": {
+                "type": "boolean",
+                "description": "Use Apify Proxy for requests. Leave the default unless the Actor's README says otherwise.",
+                "default": true
+              }
+            }
+          }
+        }
+      },
+      "annotations": {
+        "title": "Etsy Scraper — Listings, Prices & Best Sellers",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    }
+  ]
+}
