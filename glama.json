@@ -1,0 +1,9 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": [
+    "GeminiGeorge22"
+  ],
+  "name": "E-commerce Sales Signals MCP",
+  "description": "E-commerce sales signals: Amazon bestsellers and reviews, eBay sold prices, TikTok Shop, Etsy sales. Hosted remote MCP via Apify plus an open-source stdio proxy.",
+  "category": "Web Scraping"
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.GeminiGeorge22/ecommerce-sales-mcp",
+  "title": "E-commerce Sales Signals MCP",
+  "description": "E-commerce sales signals: Amazon bestsellers and reviews, eBay sold prices, TikTok Shop, Etsy sales.",
+  "repository": {
+    "url": "https://github.com/GeminiGeorge22/ecommerce-sales-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "websiteUrl": "https://github.com/GeminiGeorge22/ecommerce-sales-mcp",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.apify.com/?tools=junglee/amazon-bestsellers,junglee/amazon-reviews-scraper,caffein.dev/ebay-sold-listings,unseenuser/TikTok-Shop-Scraper,publicrecords/etsy-shop-velocity,publicrecords/etsy-search-scraper"
+    }
+  ]
+}
