@@ -1,5 +1,7 @@
 # ecommerce-sales-mcp (Python)
 
+<!-- mcp-name: io.github.GeminiGeorge22/ecommerce-sales-mcp -->
+
 Python version of the [ecommerce-sales-mcp](https://github.com/GeminiGeorge22/ecommerce-sales-mcp) stdio MCP server, built on the official [`mcp`](https://pypi.org/project/mcp/) Python SDK. Same tools, same `APIFY_TOKEN` env var, same hosted endpoint as the Node.js server.
 
 Stdio MCP server: e-commerce sales signals: amazon bestsellers and reviews, ebay sold prices, tiktok shop, etsy sales via Apify's hosted MCP gateway
@@ -11,15 +13,17 @@ It answers `initialize` and `tools/list` locally from the bundled `tools.json` (
 Requires Python 3.10+. With [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "git+https://github.com/GeminiGeorge22/ecommerce-sales-mcp#subdirectory=python" ecommerce-sales-mcp
+uvx ecommerce-sales-mcp
 ```
 
 With pip:
 
 ```bash
-pip install "git+https://github.com/GeminiGeorge22/ecommerce-sales-mcp#subdirectory=python"
+pip install ecommerce-sales-mcp
 ecommerce-sales-mcp
 ```
+
+To run the latest unreleased code from GitHub instead of the PyPI release: `uvx --from "git+https://github.com/GeminiGeorge22/ecommerce-sales-mcp#subdirectory=python" ecommerce-sales-mcp`.
 
 MCP client config:
 
@@ -28,7 +32,7 @@ MCP client config:
   "mcpServers": {
     "ecommerce-sales": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/GeminiGeorge22/ecommerce-sales-mcp#subdirectory=python", "ecommerce-sales-mcp"],
+      "args": ["ecommerce-sales-mcp"],
       "env": { "APIFY_TOKEN": "YOUR_APIFY_TOKEN" }
     }
   }
