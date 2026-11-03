@@ -1,6 +1,6 @@
 {
   "name": "ecommerce-sales-mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Stdio MCP server: e-commerce sales signals: amazon bestsellers and reviews, ebay sold prices, tiktok shop, etsy sales via Apify's hosted MCP gateway",
   "type": "module",
   "license": "MIT",
