@@ -396,7 +396,7 @@
     {
       "name": "unseenuser--TikTok-Shop-Scraper",
       "title": "TikTok Shop Scraper [NO COOKIES] ✅",
-      "description": "TikTok Shop Scraper [NO COOKIES] ✅. Extract product data, reviews, seller info, creator affiliates, and GMV/sales estimates from TikTok Shop at scale. Filter by category, price range, and country (US, UK). Built for dropshippers, e-commerce sellers, and DTC brands hunting trending products before they go viral.\n\nWhen to use: Use for TikTok Shop products, reviews, sellers, creator affiliates and GMV/sales estimates by category, keyword, shop or product URL.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"unseenuser/TikTok-Shop-Scraper\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/unseenuser/TikTok-Shop-Scraper",
+      "description": "TikTok Shop Scraper [NO COOKIES] ✅. Extract TikTok Shop product data, reviews, shop catalogs and creator affiliate showcases at scale. Get price, discount, units sold, rating, review count and shop name. US TikTok Shop only. Built for dropshippers, e-commerce sellers and DTC brands hunting trending products before they go viral.\n\nWhen to use: Use for TikTok Shop products, reviews, sellers, creator affiliates and GMV/sales estimates by category, keyword, shop or product URL.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"unseenuser/TikTok-Shop-Scraper\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/unseenuser/TikTok-Shop-Scraper",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -485,14 +485,14 @@
           },
           "maxResults": {
             "title": "Max results per input (0 = everything)",
-            "description": "0 = return all available results (no limit). Any other number is a limit per query, shop or creator: with 5 keywords and 100 here, you get up to 500 rows in total. There is no ceiling on this number. Nothing is capped for technical reasons, so if you want to control spend, use this run's \"max items\" setting, which limits what you are charged for.",
+            "description": "0 = return all available results (no limit). Any other number is a limit per query, shop or creator: with 5 keywords and 100 here, you get up to 500 rows in total. There is no ceiling on this number.",
             "type": "integer",
             "minimum": 0,
             "default": 0
           },
           "maxReviewsPerProduct": {
             "title": "Max reviews per product (0 = every review)",
-            "description": "0 = fetch every review the product has (no limit). Only used in Product Reviews mode. There is no ceiling here either, so be aware that popular products can carry tens of thousands of reviews and each review is one billable row. Use this run's \"max items\" setting if you want a hard stop on spend.",
+            "description": "0 = fetch every review the product has (no limit). Only used in Product Reviews mode. There is no ceiling here either, and popular products can carry tens of thousands of reviews.",
             "type": "integer",
             "minimum": 0,
             "default": 0
@@ -518,8 +518,8 @@
     },
     {
       "name": "publicrecords--etsy-shop-velocity",
-      "title": "Etsy Shop Sales Tracker & Scraper",
-      "description": "Etsy Shop Sales Tracker & Scraper. Track Etsy shop sales counters with this Etsy shop scraper: measured sales counts with the date each was read.\n\nWhen to use: Use when you need how many sales an Etsy shop has made, or how fast shops are selling, filtered by shop name, title keyword, category or change date. Returns one row per shop with the measured sales counter and the date it was read.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"publicrecords/etsy-shop-velocity\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/publicrecords/etsy-shop-velocity",
+      "title": "Etsy Shop Daily Sales Tracker & Scraper",
+      "description": "Etsy Shop Daily Sales Tracker & Scraper. Daily sales for 370,000+ Etsy shops: sales per day, 7-day and 28-day sales and total sales, measured from each shop's public sales counter and dated.\n\nWhen to use: Use when you need how many sales an Etsy shop has made, or how fast shops are selling, filtered by shop name, title keyword, category or change date. Returns one row per shop with the measured sales counter and the date it was read.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"publicrecords/etsy-shop-velocity\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/publicrecords/etsy-shop-velocity",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -527,14 +527,16 @@
             "title": "Shop names",
             "description": "Etsy shop names (the part after etsy.com/shop/). Leave empty to use the keyword or category filters. Example: [\"OrelCeramics\",\"Bestickend\"]",
             "type": "array",
+            "maxItems": 20000,
             "items": {
               "type": "string"
             }
           },
           "keywords": {
             "title": "Keywords in shop title",
-            "description": "Case-insensitive words matched against the shop title and headline.",
+            "description": "Case-insensitive words matched against the shop title and headline. At most 5000 keywords (larger lists are refused with a clear message).",
             "type": "array",
+            "maxItems": 5000,
             "items": {
               "type": "string"
             }
@@ -567,7 +569,7 @@
         }
       },
       "annotations": {
-        "title": "Etsy Shop Sales Tracker & Scraper",
+        "title": "Etsy Shop Daily Sales Tracker & Scraper",
         "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": false,
@@ -576,8 +578,8 @@
     },
     {
       "name": "publicrecords--etsy-search-scraper",
-      "title": "Etsy Scraper — Listings, Prices & Best Sellers",
-      "description": "Etsy Scraper — Listings, Prices & Best Sellers. Scrape Etsy search results by keyword, category or market page: title, price, rating, reviews, Bestseller and Star Seller badges, ad flag and search rank.\n\nWhen to use: Use when you need what ranks on Etsy for a keyword, category or market page: position, price, rating, review count, Bestseller/Star Seller badges and whether the listing is an ad.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"publicrecords/etsy-search-scraper\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/publicrecords/etsy-search-scraper",
+      "title": "Etsy Scraper — Listings, Prices, Best Sellers & Ad Flags",
+      "description": "Etsy Scraper — Listings, Prices, Best Sellers & Ad Flags. Etsy scraper for product research: search results by keyword, market page or category URL with price, rating, reviews, Bestseller and Star Seller badges, ad flag, shop and Etsy's rank position. One row per listing. Works with Claude.\n\nWhen to use: Use when you need what ranks on Etsy for a keyword, category or market page: position, price, rating, review count, Bestseller/Star Seller badges and whether the listing is an ad.\n\nReturns: the run's dataset rows as structured JSON (one row per result), plus the run and dataset IDs for paging the full dataset.\n\nBehavior: starts one run of the Apify Actor \"publicrecords/etsy-search-scraper\" through Apify's hosted MCP gateway (mcp.apify.com) with your own APIFY_TOKEN; the run uses your Apify account. Read-only: it only reads public web data and changes nothing on the source site. Docs: https://apify.com/publicrecords/etsy-search-scraper",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -739,7 +741,7 @@
         }
       },
       "annotations": {
-        "title": "Etsy Scraper — Listings, Prices & Best Sellers",
+        "title": "Etsy Scraper — Listings, Prices, Best Sellers & Ad Flags",
         "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": false,
